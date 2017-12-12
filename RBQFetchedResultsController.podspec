@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name         = "RBQFetchedResultsController"
-  s.version      = "5.0.2"
+  s.version      = "5.0.2.1"
   s.summary      = "Drop-in replacement for NSFetchedResultsController backed by Realm."
   s.description  = <<-DESC
                     The RBQFetchedResultsController (FRC) is a replacement for NSFetchedResultsController when used in conjunction with RBQRealmNotificationManager and RBQRealmChangeLogger. The controller and delegate follow the same paradigm as NSFetchedResultsController, and allow the developer to monitor changes of an RLMObject subclass.
@@ -13,7 +13,7 @@ Pod::Spec.new do |s|
   s.author       = { "Roobiq" => "support@roobiq.com" }
   s.social_media_url   = "http://twitter.com/Roobiq"
   s.platform     = :ios, "7.0"
-  s.source       = { :git => "https://github.com/Roobiq/RBQFetchedResultsController.git", :tag => "v#{s.version}", :submodules => true }
+  s.source       = { :git => "git@github.com:vueling/RBQFetchedResultsController.git", :tag => "v#{s.version}", :submodules => true }
   s.source_files  = [
     "RBQFetchedResultsController/Source/**/*.{h,m}",
     "RBQFetchedResultsController/RBQFRC.h"

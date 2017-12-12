@@ -10,20 +10,20 @@ import Realm
 import RealmSwift
 
 /**
-This class is used by the FetchedResultsController to represent the properties of the fetch. The FetchRequest is specific to one Object and uses an NSPredicate and array of SortDescriptors to define the query.
-*/
+ This class is used by the FetchedResultsController to represent the properties of the fetch. The FetchRequest is specific to one Object and uses an NSPredicate and array of SortDescriptors to define the query.
+ */
 open class FetchRequest<T: Object> {
     
     // MARK: Initializers
     
     /**
-    Constructor method to create a fetch request for a given entity name in a specific Realm.
-    
-    :param: realm      Realm in which the Object is persisted (if passing in-memory Realm, make sure to keep a strong reference elsewhere since fetch request only stores the path)
-    :param predicate  NSPredicate that represents the search query or nil if all objects should be included
-    
-    :returns: A new instance of FetchRequest
-    */
+     Constructor method to create a fetch request for a given entity name in a specific Realm.
+     
+     :param: realm      Realm in which the Object is persisted (if passing in-memory Realm, make sure to keep a strong reference elsewhere since fetch request only stores the path)
+     :param predicate  NSPredicate that represents the search query or nil if all objects should be included
+     
+     :returns: A new instance of FetchRequest
+     */
     public init(realm: Realm, predicate: NSPredicate?) {
         let entityName = T.className()
         
@@ -75,7 +75,7 @@ open class FetchRequest<T: Object> {
                 
                 for rlmSortDesc in rbqSortDescriptors {
                     
-                    sortDescriptors.append(SortDescriptor(property: rlmSortDesc.property, ascending: rlmSortDesc.ascending))
+                    sortDescriptors.append(SortDescriptor(keyPath: rlmSortDesc.keyPath, ascending: rlmSortDesc.ascending))
                 }
             }
             
@@ -87,7 +87,7 @@ open class FetchRequest<T: Object> {
             
             for sortDesc in newValue {
                 
-                let rlmSortDesc = RLMSortDescriptor(property: sortDesc.property, ascending: sortDesc.ascending)
+                let rlmSortDesc = RLMSortDescriptor(keyPath: sortDesc.keyPath, ascending: sortDesc.ascending)
                 
                 rbqSortDescriptors.append(rlmSortDesc)
             }
@@ -99,15 +99,15 @@ open class FetchRequest<T: Object> {
     // MARK: Functions
     
     /**
-    Retrieve all the Objects for this fetch request in its realm.
-    
-    @return Results for all the objects in the fetch request (not thread-safe).
-    */
+     Retrieve all the Objects for this fetch request in its realm.
+     
+     @return Results for all the objects in the fetch request (not thread-safe).
+     */
     open func fetchObjects() -> Results<T> {
-
-//        var fetchResults = self.realm.objects(T)
+        
+        //        var fetchResults = self.realm.objects(T)
         var fetchResults = self.realm.objects(T.self)
-
+        
         // If we have a predicate use it
         
         if let predicate = self.predicate {
@@ -123,16 +123,16 @@ open class FetchRequest<T: Object> {
     }
     
     /**
-    Should this object be in our fetch results?
-    
-    Intended to be used by the FetchedResultsController to evaluate incremental changes. For
-    simple fetch requests this just evaluates the NSPredicate, but subclasses may have a more
-    complicated implementaiton.
-    
-    :param: object Realm object of appropriate type
-    
-    :returns: YES if performing fetch would include this object
-    */
+     Should this object be in our fetch results?
+     
+     Intended to be used by the FetchedResultsController to evaluate incremental changes. For
+     simple fetch requests this just evaluates the NSPredicate, but subclasses may have a more
+     complicated implementaiton.
+     
+     :param: object Realm object of appropriate type
+     
+     :returns: YES if performing fetch would include this object
+     */
     open func evaluateObject(_ object: T) -> Bool {
         
         if let predicate = self.predicate {
@@ -146,3 +146,4 @@ open class FetchRequest<T: Object> {
     
     internal let rbqFetchRequest: RBQFetchRequest
 }
+

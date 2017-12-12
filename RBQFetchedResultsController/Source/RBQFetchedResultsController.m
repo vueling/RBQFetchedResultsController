@@ -372,9 +372,9 @@ static void * RBQArrayFetchRequestContext = &RBQArrayFetchRequestContext;
         _cacheName = name;
         _fetchRequest = fetchRequest;
         _sectionNameKeyPath = sectionNameKeyPath;
-		
+        
 #ifdef DEBUG
-		_logging = true;
+        _logging = true;
 #endif
     }
     
@@ -592,7 +592,7 @@ static void * RBQArrayFetchRequestContext = &RBQArrayFetchRequestContext;
 
 - (void)updateFetchRequest:(RBQFetchRequest *)fetchRequest
         sectionNameKeyPath:(NSString *)sectionNameKeyPath
-            andPerformFetch:(BOOL)performFetch
+           andPerformFetch:(BOOL)performFetch
 {
     @synchronized(self) {
         // Turn off change notifications since we are replacing fetch request
@@ -699,7 +699,7 @@ static void * RBQArrayFetchRequestContext = &RBQArrayFetchRequestContext;
     
     CFRunLoopPerformBlock(self.notificationRunLoop.getCFRunLoop, kCFRunLoopDefaultMode, ^{
         if (weakSelf.notificationToken) {
-            [weakSelf.notificationToken stop];
+            [weakSelf.notificationToken invalidate];
             weakSelf.notificationToken = nil;
             weakSelf.notificationCollection = nil;
         }
@@ -731,7 +731,7 @@ static void * RBQArrayFetchRequestContext = &RBQArrayFetchRequestContext;
 {
     // Remove the notifications
     if (self.notificationToken) {
-        [self.notificationToken stop];
+        [self.notificationToken invalidate];
         self.notificationToken = nil;
     }
     
@@ -812,29 +812,29 @@ static void * RBQArrayFetchRequestContext = &RBQArrayFetchRequestContext;
         
         RBQSectionChangesObject *sectionChanges = [self createSectionChangesWithChangeSets:changeSets
                                                                                      state:state];
-
+        
         if ([self.delegate respondsToSelector:@selector(controllerWillChangeContent:)]) {
-
+            
             [self runOnMainThread:^(){
                 [weakSelf.delegate controllerWillChangeContent:weakSelf];
             }];
         }
-
+        
         [state.cacheRealm beginWriteTransaction];
         
         // Create Object To Gather Up Derived Changes
         RBQDerivedChangesObject *derivedChanges = [self deriveChangesWithChangeSets:changeSets
                                                                      sectionChanges:sectionChanges
                                                                               state:state];
-
-		if(self.logging) {
-			NSLog(@"%lu Derived Inserted Sections",(unsigned long)derivedChanges.insertedSectionChanges.count);
-			NSLog(@"%lu Derived Deleted Sections",(unsigned long)derivedChanges.deletedSectionChanges.count);
-			NSLog(@"%lu Derived Added Objects",(unsigned long)derivedChanges.insertedObjectChanges.count);
-			NSLog(@"%lu Derived Deleted Objects",(unsigned long)derivedChanges.deletedObjectChanges.count);
-			NSLog(@"%lu Derived Moved Objects",(unsigned long)derivedChanges.movedObjectChanges.count);
-		}
-		
+        
+        if(self.logging) {
+            NSLog(@"%lu Derived Inserted Sections",(unsigned long)derivedChanges.insertedSectionChanges.count);
+            NSLog(@"%lu Derived Deleted Sections",(unsigned long)derivedChanges.deletedSectionChanges.count);
+            NSLog(@"%lu Derived Added Objects",(unsigned long)derivedChanges.insertedObjectChanges.count);
+            NSLog(@"%lu Derived Deleted Objects",(unsigned long)derivedChanges.deletedObjectChanges.count);
+            NSLog(@"%lu Derived Moved Objects",(unsigned long)derivedChanges.movedObjectChanges.count);
+        }
+        
         // Apply Derived Changes To Cache
         [self applyDerivedChangesToCache:derivedChanges
                                    state:state];
@@ -1624,7 +1624,7 @@ static void * RBQArrayFetchRequestContext = &RBQArrayFetchRequestContext;
                 [insertedObjectChangesBySection setObject:insertedChangesInSection
                                                    forKey:@(objectChange.updatedIndexpath.section)];
             }
-
+            
             [insertedChangesInSection addObject:objectChange];
         }
         // For all objectChanges that are not inserts/deletes, store them to process next
@@ -1884,7 +1884,7 @@ static void * RBQArrayFetchRequestContext = &RBQArrayFetchRequestContext;
 - (RLMRealm *)cacheRealm
 {
     if (self.cacheName) {
-
+        
         if ([NSThread isMainThread] &&
             self.realmForMainThread) {
             
